@@ -15,6 +15,9 @@ public class AudioEngine {
 
     public void loadSong(File song) {
         try {
+            if (this.song != null) {
+                this.song.close();
+            }
             AudioInputStream stream = AudioSystem.getAudioInputStream(song);
             this.song = AudioSystem.getClip();
             this.song.open(stream);

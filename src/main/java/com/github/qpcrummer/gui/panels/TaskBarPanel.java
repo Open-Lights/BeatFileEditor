@@ -6,6 +6,7 @@ import java.awt.*;
 public class TaskBarPanel extends JPanel {
     private final JButton exportToFileButton = new JButton("Export");
     private final JButton importFromFileButton = new JButton("Import");
+    private final JButton songButton = new JButton("Song");
     private final JButton playButton = new JButton("Play");
     private final JButton rewindButton = new JButton("Rewind");
 
@@ -24,13 +25,17 @@ public class TaskBarPanel extends JPanel {
 
         gbc.gridx = 1;
         exportToFileButton.setPreferredSize(new Dimension(100, 50));
-        add(exportToFileButton);
+        add(exportToFileButton, gbc);
 
         gbc.gridx = 2;
+        songButton.setPreferredSize(new Dimension(100, 50));
+        add(songButton, gbc);
+
+        gbc.gridx = 3;
         JPanel musicPanel = new JPanel();
         musicPanel.setPreferredSize(new Dimension(200, 50));
         musicPanel.add(playButton);
         musicPanel.add(rewindButton);
-        add(musicPanel);
+        add(musicPanel, gbc);
     }
 }

@@ -3,12 +3,14 @@ package com.github.qpcrummer.gui;
 import com.github.qpcrummer.gui.panels.BottomTaskBarPanel;
 import com.github.qpcrummer.gui.panels.EditorRectanglePanel;
 import com.github.qpcrummer.gui.panels.TaskBarPanel;
+import com.github.qpcrummer.gui.panels.TimeLinePanel;
 
 import javax.swing.*;
 import java.awt.*;
 
 public class TestMainFrame extends JFrame {
-    private final JPanel editorPanelHolder = new JPanel();
+    private final TimeLinePanel editorPanelHolder = new TimeLinePanel();
+
     public TestMainFrame() {
         setLayout(new GridBagLayout());
 
@@ -41,6 +43,12 @@ public class TestMainFrame extends JFrame {
         setLocationRelativeTo(null); // Center the frame on the screen
         pack(); // Automatically adjust the frame size based on components
         setVisible(true);
+
+        try {
+            editorPanelHolder.test();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void addNewEditor() {
