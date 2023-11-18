@@ -32,11 +32,12 @@ public class Main extends Application {
 
     @Override
     public void process() {
-        if (mouseActivity()) {
-            setFPSLimit(30);
-        } else {
-            setFPSLimit(5);
-        }
+        setFPSLimit(30);
+        //if (mouseActivity()) {
+        //    setFPSLimit(30);
+        //} else {
+        //    setFPSLimit(5);
+        //}
 
         MainGUI.render();
 

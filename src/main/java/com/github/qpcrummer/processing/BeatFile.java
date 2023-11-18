@@ -2,6 +2,7 @@ package com.github.qpcrummer.processing;
 
 import com.github.qpcrummer.Main;
 import com.github.qpcrummer.directory.Directory;
+import com.github.qpcrummer.music.MusicPlayer;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -17,13 +18,16 @@ public class BeatFile {
     private static final String txt = ".txt";
 
     public static void save(List<?> beats, int[] channels) {
-        // TODO Put song name in here
-        String name = "songName" + "-" + joinIntArray(channels) + txt;
-        try {
-            writeListToFile(beats, name);
-        } catch (IOException e) {
-            Main.logger.warning("Failed to save beat file");
-            throw new RuntimeException(e);
+        if (MusicPlayer.currentSong != null) {
+            String name = getSongName() + "-" + joinIntArray(channels) + txt;
+            try {
+                writeListToFile(beats, name);
+            } catch (IOException e) {
+                Main.logger.warning("Failed to save beat file");
+                throw new RuntimeException(e);
+            }
+        } else {
+            Main.logger.warning("Failed to save beat file because no song is loaded");
         }
     }
 
@@ -55,5 +59,9 @@ public class BeatFile {
         return Arrays.stream(array)
                 .mapToObj(String::valueOf)
                 .collect(Collectors.joining("_"));
+    }
+
+    private static String getSongName() {
+        return MusicPlayer.currentSong.getFileName().toString().replace(".wav", "");
     }
 }

@@ -73,6 +73,8 @@ public class MainGUI {
 
         ImGui.beginChild("HorizontalScrollingRegion", ImGui.getIO().getDisplaySizeX(), ImGui.getIO().getDisplaySizeY() - 36, false, ImGuiWindowFlags.HorizontalScrollbar);
 
+        // Old container code
+        /*
         float initialPosY = ImGui.getCursorPosY();
         float initialPosX = ImGui.getCursorPosX();
         int i = 0;
@@ -85,6 +87,9 @@ public class MainGUI {
             container.render(iterator, i, x);
             i++;
         }
+        */
+
+        TimeLine.render();
 
         ImGui.endChild();
 
