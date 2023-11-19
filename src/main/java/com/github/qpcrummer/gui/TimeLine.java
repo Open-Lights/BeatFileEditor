@@ -17,7 +17,7 @@ public class TimeLine {
     public static final List<Track> tracks = new ArrayList<>();
 
     public static void render() {
-        ImGui.beginChild("TimeLineViewRegion", ImGui.getIO().getDisplaySizeX(), ImGui.getIO().getDisplaySizeY() - 36, false, ImGuiWindowFlags.HorizontalScrollbar);
+        ImGui.beginChild("TimeLineViewRegion", ImGui.getIO().getDisplaySizeX(), ImGui.getIO().getDisplaySizeY() - 36 - Toolbox.TOOLBOX_HEIGHT, false, ImGuiWindowFlags.HorizontalScrollbar);
 
         // Set the fixed height of the timeline
         float scrollBarPosPercentage = ImGui.getScrollX() / ImGui.getScrollMaxX();
