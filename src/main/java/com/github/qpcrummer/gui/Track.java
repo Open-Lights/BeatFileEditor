@@ -7,13 +7,15 @@ import imgui.type.ImString;
 
 import java.util.Iterator;
 
+import static com.github.qpcrummer.gui.TimeLine.TIMELINE_HEIGHT;
 import static com.github.qpcrummer.gui.TimeLine.tracks;
 
 public class Track {
     private float y;
-    public static final float TRACK_HEIGHT = 100.0f;
-    private final float TRACK_SPACING = 40.0f;
-    private final float DELETE_BUTTON_SIZE = 20.0f;
+    public static final short TRACK_HEIGHT = 100;
+    public static final short TRACK_OFFSET = 70;
+    private final short TRACK_SPACING = 40;
+    private final short DELETE_BUTTON_SIZE = 20;
 
     private final ImString inputTextValue = new ImString(); // Initial value for the input text
     private final StringBuilder OUTPUT = new StringBuilder();
@@ -40,8 +42,6 @@ public class Track {
         // Draw the rectangle
         ImGui.getForegroundDrawList().addRectFilled(trackWidth, yPos, 0, trackBottom, 0xFFCCCCCC);
         ImGui.getForegroundDrawList().addRect(trackWidth, yPos, 0, trackBottom, 0xFFFFFFFF);
-        ImGui.getForegroundDrawList().addLine(trackWidth, yPos, 0, yPos, 0xFFFFFFFF);
-        ImGui.getForegroundDrawList().addLine(trackWidth, trackBottom, 0, trackBottom, 0xFFFFFFFF);
 
         // Draw the delete button inside the rectangle
         ImGui.setCursorPosY(yPos - 50f);
@@ -64,8 +64,7 @@ public class Track {
             y = lastTrack.y + TRACK_HEIGHT + TRACK_SPACING;
         } else {
             // Set initial Y position below the timeline
-            float timelineHeight = 40.0f; // Adjust this based on your timeline size
-            y = ImGui.getCursorPosY() + timelineHeight + TRACK_SPACING;
+            y = ImGui.getCursorPosY() + TIMELINE_HEIGHT + TRACK_SPACING;
         }
     }
 }
