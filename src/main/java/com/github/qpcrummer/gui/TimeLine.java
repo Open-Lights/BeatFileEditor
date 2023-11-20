@@ -9,11 +9,12 @@ import java.util.List;
 import java.util.ListIterator;
 
 public class TimeLine {
-    public static final short TOTAL_TIME = 600;
-    public static final short LARGE_TICK_SPACING = 100;
-    public static final float SMALL_TICK_SPACING = LARGE_TICK_SPACING * 0.1f;
+    public static short TOTAL_TIME_MODIFIER = 1;
+    public static int TOTAL_TIME = 600 * TOTAL_TIME_MODIFIER;
+    public static short LARGE_TICK_SPACING = 100;
+    public static float SMALL_TICK_SPACING = LARGE_TICK_SPACING * 0.1f;
     public static final short TIMELINE_HEIGHT = 30;
-    private static final short CULLING_PADDING = 14;
+    public static float CULLING_PADDING = (14f / LARGE_TICK_SPACING) * 100;
     public static final List<Track> tracks = new ArrayList<>();
 
     public static void render() {
@@ -38,18 +39,27 @@ public class TimeLine {
 
             ImGui.getForegroundDrawList().addLine(tickX, tickY, tickX, tickEndY, 0xFFFFFFFF, 1.0f);
 
-            // Draw shorter ticks at every 10px (representing 10ms intervals)
-            for (float subTick = 0; subTick < LARGE_TICK_SPACING; subTick += SMALL_TICK_SPACING) {
-                float subTickX = tickX + subTick;
-                float subTickEndY = tickY + 0.5f * TIMELINE_HEIGHT - 10;
+            if (MainGUI.zoom > 1) {
+                // Draw shorter ticks at every 10px (representing 10ms intervals)
+                for (float subTick = 0; subTick < LARGE_TICK_SPACING; subTick += SMALL_TICK_SPACING) {
+                    float subTickX = tickX + subTick;
+                    float subTickEndY = tickY + 0.5f * TIMELINE_HEIGHT - 10;
 
-                ImGui.getForegroundDrawList().addLine(subTickX, tickY, subTickX, subTickEndY, 0xFFFFFFFF, 0.5f);
+                    ImGui.getForegroundDrawList().addLine(subTickX, tickY, subTickX, subTickEndY, 0xFFFFFFFF, 0.5f);
 
-                renderLinesOnTracks(subTickX);
+                    renderLinesOnTracks(subTickX);
+                }
+            } else {
+                renderLinesOnTracks(tickX);
             }
-
             // Draw text above large ticks
-            ImGui.getForegroundDrawList().addText(tickX - 5, tickY - 20, 0xFFFFFFFF, String.format("%.0f", (float) i));
+            if (MainGUI.zoom == MainGUI.TEN_MS_VIEW) {
+                ImGui.getForegroundDrawList().addText(tickX - 5, tickY - 20, 0xFFFFFFFF, String.format("%.1f", (float) i * 0.1));
+            } else if (MainGUI.zoom == MainGUI.MS_VIEW) {
+                ImGui.getForegroundDrawList().addText(tickX - 5, tickY - 20, 0xFFFFFFFF, String.format("%.2f", (float) i * 0.01));
+            } else {
+                ImGui.getForegroundDrawList().addText(tickX - 5, tickY - 20, 0xFFFFFFFF, String.format("%.0f", (float) i));
+            }
         }
 
         ImGui.separator();
