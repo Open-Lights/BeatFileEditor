@@ -9,9 +9,9 @@ import java.util.List;
 import java.util.ListIterator;
 
 public class TimeLine {
-    private static final short TOTAL_TIME = 600;
-    private static final short LARGE_TICK_SPACING = 100;
-    private static final float SMALL_TICK_SPACING = LARGE_TICK_SPACING * 0.1f;
+    public static final short TOTAL_TIME = 600;
+    public static final short LARGE_TICK_SPACING = 100;
+    public static final float SMALL_TICK_SPACING = LARGE_TICK_SPACING * 0.1f;
     public static final short TIMELINE_HEIGHT = 30;
     private static final short CULLING_PADDING = 14;
     public static final List<Track> tracks = new ArrayList<>();
@@ -44,6 +44,8 @@ public class TimeLine {
                 float subTickEndY = tickY + 0.5f * TIMELINE_HEIGHT - 10;
 
                 ImGui.getForegroundDrawList().addLine(subTickX, tickY, subTickX, subTickEndY, 0xFFFFFFFF, 0.5f);
+
+                renderLinesOnTracks(subTickX);
             }
 
             // Draw text above large ticks
@@ -74,6 +76,13 @@ public class TimeLine {
             float y = initialPosY + (i * Track.TRACK_HEIGHT) + (40 * i) + Track.TRACK_OFFSET;
             iterator.next().render(iterator, y);
             i++;
+        }
+    }
+
+    private static void renderLinesOnTracks(float xValue) {
+        for (int i = 0; i < tracks.size(); i++) {
+            float trackPosY = ImGui.getCursorPosY() + (i * Track.TRACK_HEIGHT) + (40 * i) + Track.TRACK_OFFSET + 3;
+            ImGui.getForegroundDrawList().addLine(xValue, trackPosY + Track.TRACK_HEIGHT, xValue, trackPosY, 0xFF0000FF, 0.5f);
         }
     }
 

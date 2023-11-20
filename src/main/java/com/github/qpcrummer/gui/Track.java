@@ -7,9 +7,6 @@ import imgui.type.ImString;
 
 import java.util.Iterator;
 
-import static com.github.qpcrummer.gui.TimeLine.TIMELINE_HEIGHT;
-import static com.github.qpcrummer.gui.TimeLine.tracks;
-
 public class Track {
     private float y;
     public static final short TRACK_HEIGHT = 100;
@@ -40,7 +37,7 @@ public class Track {
         float trackBottom = yPos + TRACK_HEIGHT;
 
         // Draw the rectangle
-        ImGui.getForegroundDrawList().addRectFilled(trackWidth, yPos, 0, trackBottom, 0xFFCCCCCC);
+        ImGui.getBackgroundDrawList().addRectFilled(trackWidth, yPos, 0, trackBottom, 0xFFFFFFFF);
         ImGui.getForegroundDrawList().addRect(trackWidth, yPos, 0, trackBottom, 0xFFFFFFFF);
 
         // Draw the delete button inside the rectangle
@@ -55,16 +52,14 @@ public class Track {
     }
 
 
-
-
     public void updateY() {
         // Calculate the Y position for a new track
-        if (!tracks.isEmpty()) {
-            Track lastTrack = tracks.get(tracks.size() - 1);
+        if (!TimeLine.tracks.isEmpty()) {
+            Track lastTrack = TimeLine.tracks.get(TimeLine.tracks.size() - 1);
             y = lastTrack.y + TRACK_HEIGHT + TRACK_SPACING;
         } else {
             // Set initial Y position below the timeline
-            y = ImGui.getCursorPosY() + TIMELINE_HEIGHT + TRACK_SPACING;
+            y = ImGui.getCursorPosY() + TimeLine.TIMELINE_HEIGHT + TRACK_SPACING;
         }
     }
 }
