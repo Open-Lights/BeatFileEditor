@@ -1,5 +1,6 @@
 package com.github.qpcrummer.gui;
 
+import com.github.qpcrummer.music.MusicPlayer;
 import imgui.ImGui;
 import imgui.flag.ImGuiMouseButton;
 import imgui.flag.ImGuiWindowFlags;
@@ -18,6 +19,8 @@ public class TimeLine {
     public static final List<Track> tracks = new ArrayList<>();
 
     public static void render() {
+        boolean leftClick = ImGui.isMouseClicked(ImGuiMouseButton.Left);
+
         ImGui.beginChild("TimeLineViewRegion", ImGui.getIO().getDisplaySizeX(), ImGui.getIO().getDisplaySizeY() - 36 - Toolbox.TOOLBOX_HEIGHT, false, ImGuiWindowFlags.HorizontalScrollbar);
 
         // Set the fixed height of the timeline
@@ -47,10 +50,10 @@ public class TimeLine {
 
                     ImGui.getForegroundDrawList().addLine(subTickX, tickY, subTickX, subTickEndY, 0xFFFFFFFF, 0.5f);
 
-                    renderLinesOnTracks(subTickX);
+                    renderLinesOnTracks(subTickX, (int) (i * 10 + subTick));
                 }
             } else {
-                renderLinesOnTracks(tickX);
+                renderLinesOnTracks(tickX, i);
             }
             // Draw text above large ticks
             if (MainGUI.zoom == MainGUI.TEN_MS_VIEW) {
@@ -68,7 +71,10 @@ public class TimeLine {
         handleRightClick();
 
         // Render tracks below timeline
-        renderTracks();
+        renderTracks(leftClick);
+
+        // Render music progress line
+        renderMusicProgressLine(18, TIMELINE_HEIGHT + 18, TOTAL_TIME * LARGE_TICK_SPACING + LARGE_TICK_SPACING);
 
         ImGui.endChild();
     }
@@ -77,22 +83,23 @@ public class TimeLine {
         return Math.abs(current - visibleRange) <= CULLING_PADDING;
     }
 
-    private static void renderTracks() {
+    private static void renderTracks(boolean leftClick) {
         // Draw tracks below the timeline
         ListIterator<Track> iterator = tracks.listIterator();
         float initialPosY = ImGui.getCursorPosY();
         int i = 0;
         while (iterator.hasNext()) {
             float y = initialPosY + (i * Track.TRACK_HEIGHT) + (40 * i) + Track.TRACK_OFFSET;
-            iterator.next().render(iterator, y);
+            iterator.next().render(iterator, y, leftClick);
             i++;
         }
     }
 
-    private static void renderLinesOnTracks(float xValue) {
+    private static void renderLinesOnTracks(float xValue, int tick) {
         for (int i = 0; i < tracks.size(); i++) {
             float trackPosY = ImGui.getCursorPosY() + (i * Track.TRACK_HEIGHT) + (40 * i) + Track.TRACK_OFFSET + 3;
             ImGui.getForegroundDrawList().addLine(xValue, trackPosY + Track.TRACK_HEIGHT, xValue, trackPosY, 0xFF0000FF, 0.5f);
+            BeatRenderer.render(tick, tracks.get(i), xValue, trackPosY, SMALL_TICK_SPACING);
         }
     }
 
@@ -111,6 +118,32 @@ public class TimeLine {
             }
 
             ImGui.endPopup();
+        }
+    }
+
+    private static void renderMusicProgressLine(float yMin, float yMax, float screenLength) {
+        float songProgress = (float) MusicPlayer.getPositionMilliseconds() / MusicPlayer.getSongLengthMilliseconds();
+        float desiredScrollX = songProgress * screenLength;
+
+        float middleScreenX = ImGui.getIO().getDisplaySizeX() / 2.0f;
+
+        // Only move the music line if it's not in the middle of the screen
+        if (desiredScrollX <= middleScreenX) {
+            ImGui.getForegroundDrawList().addLine(desiredScrollX, yMin, desiredScrollX, yMax, 0xFF0000FF, 0.5f);
+        } else {
+            ImGui.getForegroundDrawList().addLine(middleScreenX, yMin, middleScreenX, yMax, 0xFF0000FF, 0.5f);
+        }
+
+        float currentScrollX = ImGui.getScrollX();
+
+        // Check if the music line is in the middle of the screen
+        if (desiredScrollX > middleScreenX) {
+            float desiredSpeed = (desiredScrollX - currentScrollX) / ImGui.getIO().getDeltaTime();
+
+            // Adjust the scrolling speed
+            if (MusicPlayer.playing) {
+                ImGui.setScrollX(currentScrollX + desiredSpeed * ImGui.getIO().getDeltaTime());
+            }
         }
     }
 }

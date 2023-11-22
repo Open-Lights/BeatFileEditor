@@ -1,11 +1,15 @@
 package com.github.qpcrummer.gui;
 
 import imgui.ImGui;
+import imgui.ImVec2;
 import imgui.callback.ImGuiInputTextCallback;
 import imgui.flag.ImGuiInputTextFlags;
+import imgui.flag.ImGuiMouseButton;
 import imgui.type.ImString;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 public class Track {
     private float y;
@@ -30,7 +34,13 @@ public class Track {
     };
 
 
-    public void render(Iterator<Track> iterator, float yPos) {
+    // Single Beat Storage
+    public final List<Long> singleBeats = new ArrayList<>();
+
+    // Held Beat Storage
+    public final List<long[]> heldBeats = new ArrayList<>();
+
+    public void render(Iterator<Track> iterator, float yPos, boolean leftClick) {
         // Draw the track as a rectangle with white lines on top and bottom
         float trackWidth = ImGui.getIO().getDisplaySizeX();
 
@@ -39,6 +49,19 @@ public class Track {
         // Draw the rectangle
         ImGui.getBackgroundDrawList().addRectFilled(trackWidth, yPos, 0, trackBottom, 0xFFFFFFFF);
         ImGui.getForegroundDrawList().addRect(trackWidth, yPos, 0, trackBottom, 0xFFFFFFFF);
+
+
+        // Get mouse position
+        ImVec2 mousePos = ImGui.getMousePos();
+
+        // Check if mouse position is within the rectangle's bounds
+        if (mousePos.x >= 0 && mousePos.x <= trackWidth && mousePos.y >= yPos && mousePos.y <= trackBottom) {
+            // Handle Left Click
+            if (ImGui.isMouseClicked(ImGuiMouseButton.Left)) {
+                BeatRenderer.handleLeftClick(this);
+                System.out.println("Left Click; " + singleBeats.size());
+            }
+        }
 
         // Draw the delete button inside the rectangle
         ImGui.setCursorPosY(yPos - 50f);

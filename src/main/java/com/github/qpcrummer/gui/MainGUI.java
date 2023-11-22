@@ -92,8 +92,7 @@ public class MainGUI {
         TimeLine.LARGE_TICK_SPACING = (short) (100 * zoomFactor);
         TimeLine.SMALL_TICK_SPACING = TimeLine.LARGE_TICK_SPACING * 0.1f;
         TimeLine.CULLING_PADDING = (14f / TimeLine.LARGE_TICK_SPACING) * 100;
-        // TODO Make this not constant 600
-        TimeLine.TOTAL_TIME = 600 * TimeLine.TOTAL_TIME_MODIFIER;
+        TimeLine.TOTAL_TIME = MusicPlayer.getSongLengthSec() * TimeLine.TOTAL_TIME_MODIFIER;
         zoom = zoomFactor;
     }
 }

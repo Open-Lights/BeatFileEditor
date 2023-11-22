@@ -1,8 +1,11 @@
 package com.github.qpcrummer.music;
 
+import com.github.qpcrummer.gui.TimeLine;
+
 import javax.sound.sampled.*;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.concurrent.TimeUnit;
 
 public class MusicPlayer {
 
@@ -20,6 +23,8 @@ public class MusicPlayer {
                 throw new RuntimeException(e);
             }
         }
+
+        TimeLine.TOTAL_TIME = getSongLengthSec() * TimeLine.TOTAL_TIME_MODIFIER;
     }
 
     public static boolean play() {
@@ -59,5 +64,26 @@ public class MusicPlayer {
             playing = false;
             position = 0;
         }
+    }
+
+    public static long getPositionMilliseconds() {
+        if (clip != null) {
+            return TimeUnit.MILLISECONDS.convert(clip.getMicrosecondPosition(), TimeUnit.MICROSECONDS);
+        }
+        return 0;
+    }
+
+    public static long getSongLengthMilliseconds() {
+        if (clip != null) {
+            return TimeUnit.MILLISECONDS.convert(clip.getMicrosecondLength(), TimeUnit.MICROSECONDS);
+        }
+        return 0;
+    }
+
+    public static int getSongLengthSec() {
+        if (clip != null) {
+            return (int) TimeUnit.SECONDS.convert(clip.getMicrosecondLength(), TimeUnit.MICROSECONDS);
+        }
+        return 0;
     }
 }
