@@ -35,12 +35,9 @@ public class Track {
 
 
     // Single Beat Storage
-    public final List<Long> singleBeats = new ArrayList<>();
+    public final List<Object> beats = new ArrayList<>();
 
-    // Held Beat Storage
-    public final List<long[]> heldBeats = new ArrayList<>();
-
-    public void render(Iterator<Track> iterator, float yPos, boolean leftClick) {
+    public void render(Iterator<Track> iterator, float yPos) {
         // Draw the track as a rectangle with white lines on top and bottom
         float trackWidth = ImGui.getIO().getDisplaySizeX();
 
@@ -59,7 +56,7 @@ public class Track {
             // Handle Left Click
             if (ImGui.isMouseClicked(ImGuiMouseButton.Left)) {
                 BeatRenderer.handleLeftClick(this);
-                System.out.println("Left Click; " + singleBeats.size());
+                System.out.println("Left Click; " + beats.size());
             }
         }
 
@@ -84,5 +81,13 @@ public class Track {
             // Set initial Y position below the timeline
             y = ImGui.getCursorPosY() + TimeLine.TIMELINE_HEIGHT + TRACK_SPACING;
         }
+    }
+
+    public void setChannelText(String text) {
+        this.inputTextValue.set(text);
+    }
+
+    public String getChannels() {
+        return this.inputTextValue.get();
     }
 }

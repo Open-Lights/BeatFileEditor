@@ -3,6 +3,8 @@ package com.github.qpcrummer;
 import com.github.qpcrummer.directory.Directory;
 import com.github.qpcrummer.gui.FileExplorer;
 import com.github.qpcrummer.gui.MainGUI;
+import com.github.qpcrummer.gui.Recorder;
+import com.github.qpcrummer.gui.Warning;
 import imgui.ImGui;
 import imgui.ImVec2;
 import imgui.app.Application;
@@ -19,6 +21,8 @@ public class Main extends Application {
 
     // Toggles
     public static boolean enableFileExplorer;
+    public static boolean enableRecorder;
+    public static boolean enableWarning;
 
     public static void main(String[] args) {
         Directory.createDirectories();
@@ -43,6 +47,14 @@ public class Main extends Application {
 
         if (enableFileExplorer) {
             FileExplorer.render();
+        }
+
+        if (enableRecorder) {
+            Recorder.render();
+        }
+
+        if (enableWarning) {
+            Warning.render();
         }
     }
 

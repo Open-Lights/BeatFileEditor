@@ -2,12 +2,13 @@ package com.github.qpcrummer.gui;
 
 import com.github.qpcrummer.Main;
 import com.github.qpcrummer.music.MusicPlayer;
+import com.github.qpcrummer.processing.BeatFile;
 import imgui.ImGui;
 import imgui.flag.ImGuiWindowFlags;
 
 public class MainGUI {
     private static String playPause = "Play";
-    private static final short STANDARD_VIEW = 1;
+    public static final short STANDARD_VIEW = 1;
     public static final short HUNDRED_MS_VIEW = 3;
     public static final short TEN_MS_VIEW = 4;
     public static final short MS_VIEW = 5;
@@ -31,10 +32,14 @@ public class MainGUI {
                     Main.enableFileExplorer = true;
                 }
                 if (ImGui.menuItem("Save Beat File")) {
-                    // TODO Fix this
+                    BeatFile.saveAll();
                 }
                 if (ImGui.menuItem("New Beat File")) {
-                    // TODO Fix this
+                    if (!TimeLine.tracks.isEmpty()) {
+                        Main.enableWarning = true;
+                    } else {
+                        newBeatFile();
+                    }
                 }
                 ImGui.endMenu();
             }
@@ -59,6 +64,11 @@ public class MainGUI {
                     TimeLine.TOTAL_TIME_MODIFIER = 100;
                     zoom(MS_VIEW);
                 }
+                ImGui.endMenu();
+            }
+
+            if (ImGui.beginMenu("Record")) {
+                Main.enableRecorder = true;
                 ImGui.endMenu();
             }
 
@@ -94,5 +104,11 @@ public class MainGUI {
         TimeLine.CULLING_PADDING = (14f / TimeLine.LARGE_TICK_SPACING) * 100;
         TimeLine.TOTAL_TIME = MusicPlayer.getSongLengthSec() * TimeLine.TOTAL_TIME_MODIFIER;
         zoom = zoomFactor;
+    }
+
+    public static void newBeatFile() {
+        Track track = new Track();
+        track.setChannelText(String.valueOf(0));
+        TimeLine.tracks.add(track);
     }
 }

@@ -42,7 +42,7 @@ public class TimeLine {
 
             ImGui.getForegroundDrawList().addLine(tickX, tickY, tickX, tickEndY, 0xFFFFFFFF, 1.0f);
 
-            if (MainGUI.zoom > 1) {
+            if (MainGUI.zoom != MainGUI.STANDARD_VIEW) {
                 // Draw shorter ticks at every 10px (representing 10ms intervals)
                 for (float subTick = 0; subTick < LARGE_TICK_SPACING; subTick += SMALL_TICK_SPACING) {
                     float subTickX = tickX + subTick;
@@ -55,13 +55,12 @@ public class TimeLine {
             } else {
                 renderLinesOnTracks(tickX, i);
             }
+
             // Draw text above large ticks
-            if (MainGUI.zoom == MainGUI.TEN_MS_VIEW) {
-                ImGui.getForegroundDrawList().addText(tickX - 5, tickY - 20, 0xFFFFFFFF, String.format("%.1f", (float) i * 0.1));
-            } else if (MainGUI.zoom == MainGUI.MS_VIEW) {
-                ImGui.getForegroundDrawList().addText(tickX - 5, tickY - 20, 0xFFFFFFFF, String.format("%.2f", (float) i * 0.01));
-            } else {
-                ImGui.getForegroundDrawList().addText(tickX - 5, tickY - 20, 0xFFFFFFFF, String.format("%.0f", (float) i));
+            switch (MainGUI.zoom) {
+                case MainGUI.MS_VIEW -> ImGui.getForegroundDrawList().addText(tickX - 5, tickY - 20, 0xFFFFFFFF, String.format("%.2f", (float) i * 0.01));
+                case MainGUI.TEN_MS_VIEW -> ImGui.getForegroundDrawList().addText(tickX - 5, tickY - 20, 0xFFFFFFFF, String.format("%.1f", (float) i * 0.1));
+                default -> ImGui.getForegroundDrawList().addText(tickX - 5, tickY - 20, 0xFFFFFFFF, String.format("%.0f", (float) i));
             }
         }
 
@@ -90,7 +89,7 @@ public class TimeLine {
         int i = 0;
         while (iterator.hasNext()) {
             float y = initialPosY + (i * Track.TRACK_HEIGHT) + (40 * i) + Track.TRACK_OFFSET;
-            iterator.next().render(iterator, y, leftClick);
+            iterator.next().render(iterator, y);
             i++;
         }
     }

@@ -19,12 +19,12 @@ public class Toolbox {
         ImGui.beginChild("ToolboxRegion", ImGui.getIO().getDisplaySizeX(), TOOLBOX_HEIGHT - 2, false, ImGuiWindowFlags.NoScrollbar);
         ImGui.separator();
 
-        ImGui.setCursorPosX(evenlyDistribute((short) 1, STRING_WIDTH, ImGui.getIO().getDisplaySizeX(), 0));
+        ImGui.setCursorPosX(GUItils.evenlyDistribute((short) 1, STRING_WIDTH, ImGui.getIO().getDisplaySizeX(), 0));
         ImGui.text("Toolbox");
 
         for (int i = 0; i < TOOLBOX_ITEMS; i++) {
-            ImGui.setCursorPosY(evenlyDistribute((short) 1, ITEM_DIMENSION, TOOLBOX_HEIGHT, 0));
-            ImGui.setCursorPosX(evenlyDistribute(TOOLBOX_ITEMS, ITEM_DIMENSION, ImGui.getIO().getDisplaySizeX(), i));
+            ImGui.setCursorPosY(GUItils.evenlyDistribute((short) 1, ITEM_DIMENSION, TOOLBOX_HEIGHT, 0));
+            ImGui.setCursorPosX(GUItils.evenlyDistribute(TOOLBOX_ITEMS, ITEM_DIMENSION, ImGui.getIO().getDisplaySizeX(), i));
 
             float centerX = ImGui.getCursorScreenPosX() + ITEM_RADIUS;
             float centerY = ImGui.getCursorScreenPosY() + ITEM_RADIUS;
@@ -43,9 +43,5 @@ public class Toolbox {
         }
 
         ImGui.endChild();
-    }
-
-    private static float evenlyDistribute(final short totalItems, final short itemSize, final float totalSize, final int i) {
-        return ((totalSize - (totalItems * itemSize)) / (totalItems + 1)) * (i + 1) + i * itemSize;
     }
 }
