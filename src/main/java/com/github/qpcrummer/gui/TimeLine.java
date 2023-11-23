@@ -121,27 +121,27 @@ public class TimeLine {
     }
 
     private static void renderMusicProgressLine(float yMin, float yMax, float screenLength) {
-        float songProgress = (float) MusicPlayer.getPositionMilliseconds() / MusicPlayer.getSongLengthMilliseconds();
-        float desiredScrollX = songProgress * screenLength;
+        if (MusicPlayer.playing) {
+            float songProgress = (float) MusicPlayer.getPositionMilliseconds() / MusicPlayer.getSongLengthMilliseconds();
+            float desiredScrollX = songProgress * screenLength;
 
-        float middleScreenX = ImGui.getIO().getDisplaySizeX() / 2.0f;
+            float middleScreenX = ImGui.getIO().getDisplaySizeX() / 2.0f;
 
-        // Only move the music line if it's not in the middle of the screen
-        if (desiredScrollX <= middleScreenX) {
-            ImGui.getForegroundDrawList().addLine(desiredScrollX, yMin, desiredScrollX, yMax, 0xFF0000FF, 0.5f);
-        } else {
-            ImGui.getForegroundDrawList().addLine(middleScreenX, yMin, middleScreenX, yMax, 0xFF0000FF, 0.5f);
-        }
+            // Check if the music line is in the middle of the screen
+            if (desiredScrollX >= middleScreenX) {
 
-        float currentScrollX = ImGui.getScrollX();
+                // Continue line if scrollbar is at the end
+                if (ImGui.getScrollMaxX() == ImGui.getScrollX()) {
+                    ImGui.getForegroundDrawList().addLine(desiredScrollX, yMin, desiredScrollX, yMax, 0xFF0000FF, 0.5f);
+                    return;
+                }
 
-        // Check if the music line is in the middle of the screen
-        if (desiredScrollX > middleScreenX) {
-            float desiredSpeed = (desiredScrollX - currentScrollX) / ImGui.getIO().getDeltaTime();
-
-            // Adjust the scrolling speed
-            if (MusicPlayer.playing) {
-                ImGui.setScrollX(currentScrollX + desiredSpeed * ImGui.getIO().getDeltaTime());
+                // Lock the view on the music line
+                ImGui.setScrollX(desiredScrollX - middleScreenX);
+                ImGui.getForegroundDrawList().addLine(middleScreenX, yMin, middleScreenX, yMax, 0xFF0000FF, 0.5f);
+            } else {
+                // Move the music line
+                ImGui.getForegroundDrawList().addLine(desiredScrollX, yMin, desiredScrollX, yMax, 0xFF0000FF, 0.5f);
             }
         }
     }
