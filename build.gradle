@@ -4,7 +4,7 @@ plugins {
 }
 
 group = 'com.github.qpcrummer'
-version = '1.0-SNAPSHOT'
+version = '1.0.0'
 
 repositories {
     mavenCentral()
@@ -18,4 +18,18 @@ dependencies {
 
 test {
     useJUnitPlatform()
+}
+
+shadowJar {
+    manifest {
+        attributes(
+                'Main-Class': 'com.github.qpcrummer.Main'
+        )
+    }
+    archiveClassifier.set('')
+    archiveVersion.set('')
+}
+
+tasks.register('printVersionName') {
+    println version
 }
